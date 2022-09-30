@@ -34,7 +34,7 @@ h1 {
   padding: 56px 120px 72px
 }
 
-.stats__count {
+.stats__item-count {
   font-size: 40px;
   line-height: 60px;
   font-weight: 700;

@@ -16,6 +16,11 @@ export class Map extends HTMLElement {
    */
   #container = null;
 
+  /**
+   * set events and render
+   *
+   * @param {CrimeEvent[]} events
+   */
   set events(events) {
     this.#events = events;
     this.#render();

@@ -3,7 +3,7 @@
  * @typedef {Object} CrimeEvent
  * @property {number} lat
  * @property {number} lon
- * @property {number[]} affected_type
+ * @property {number|null} affected_type
  * @property {number[]} affected_number
  * @property {number} affected_number_sum
  * @property {Date} from
@@ -26,9 +26,9 @@ export class EventsService {
 
   /**
    * all names
-   * @type {Name[]}
+   * @type {Name}
    */
-  #names = [];
+  #names = {};
 
   /**
    * Initializes data
@@ -104,9 +104,11 @@ export class EventsService {
 
     const data = await response.json();
 
+    // convert to app format + helpers
     data.forEach((event) => {
       event.from = new Date(event.from);
       event.affected_number = event.affected_number?.map((num) => +num) ?? [];
+      event.affected_type = event.affected_type ? +event.affected_type[0] : null;
       event.affected_number_sum = event.affected_number.reduce((acc, num) => acc + num, 0);
     });
 
@@ -117,7 +119,7 @@ export class EventsService {
    * Load names from url
    * @param {string} translationUrl url to translation
    * @param {string} language language
-   * @returns {Promise<Name[]>} names
+   * @returns {Promise<Name>} names
    */
   async #loadNames(translationUrl, language) {
     const response = await fetch(translationUrl)
@@ -136,7 +138,7 @@ export class EventsService {
     return data[languageKey];
   }
 
-  getAllEvents() {
-return this.#events;
+  getAllNames() {
+    return this.#names;
   }
 }
