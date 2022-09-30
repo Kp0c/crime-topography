@@ -100,7 +100,8 @@ export class Stats extends HTMLElement {
         return acc + event.affected_number_sum;
       }, 0);
 
-      statItemValue.textContent = count.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
+      // statItemValue.textContent = count.toString()
+      this.#animateValue(statItemValue, 0, count, 1000);
 
       statItem.appendChild(statItemValue);
       statItem.appendChild(statItemTitle);
@@ -109,6 +110,27 @@ export class Stats extends HTMLElement {
     });
 
     this.#container.appendChild(stats);
+  }
+
+  /**
+   * Animates number value to the given value
+   *
+   * @param {HTMLElement} element
+   * @param {number} start
+   * @param {number} end
+   * @param {number} duration
+   */
+  #animateValue(element, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      element.innerHTML = Math.floor(progress * (end - start) + start).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
   }
 }
 

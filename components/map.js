@@ -72,14 +72,17 @@ export class Map extends HTMLElement {
 
     this.#events
       .filter((event) => event.lat && event.lon)
-      .forEach(event => {
+      .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime())
+      .forEach((event, idx) => {
       const eventDot = document.createElement('div');
       eventDot.classList.add('map--dot');
 
       eventDot.style.bottom = `${(event.lat - ukraineBoundaries.latMin) / ranges.latRange * 100}%`;
       eventDot.style.left = `${(event.lon - ukraineBoundaries.lonMin) / ranges.lonRange * 100}%`;
 
-      this.#container.appendChild(eventDot);
+      setTimeout(() => {
+        this.#container.appendChild(eventDot);
+      }, idx  / this.#events.length * 1000);
     });
   }
 }
