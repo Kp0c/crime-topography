@@ -76,8 +76,7 @@ export class Chart extends HTMLElement {
         this.#selectedBar = bar;
 
         this.#selectedBar.classList.add('chart__bar--selected');
-      })
-      // bar.addEventListener('click', this.barClick.bind(this, new Date(sortedDates[i])));
+      });
 
       const affectedNumber = todayEvents.reduce((acc, event) => {
         return acc + event.affected_number_sum;
@@ -98,6 +97,18 @@ export class Chart extends HTMLElement {
     }
 
     this.shadowRoot.appendChild(chart);
+
+    setTimeout(() => {
+      this.#selectLastDay();
+    });
+  }
+
+  /**
+   * Selects last day in chart
+   */
+  #selectLastDay() {
+    const lastBar = this.shadowRoot.querySelector('.chart td:last-child .chart__bar');
+    lastBar?.click();
   }
 }
 
