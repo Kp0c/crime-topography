@@ -95,9 +95,12 @@ export class Stats extends HTMLElement {
 
       const statItemValue = document.createElement('span');
       statItemValue.classList.add('stats__item-count');
-      statItemValue.textContent = affectedTypes[affectedType].reduce((acc, event) => {
+
+      const count = affectedTypes[affectedType].reduce((acc, event) => {
         return acc + event.affected_number_sum;
       }, 0);
+
+      statItemValue.textContent = count.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
 
       statItem.appendChild(statItemValue);
       statItem.appendChild(statItemTitle);

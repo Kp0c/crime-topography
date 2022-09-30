@@ -33,8 +33,9 @@ const stats = document.querySelector('ct-stats');
 chart.events = eventService.getLastDays(100);
 
 chart.addEventListener('day-selected', (event) => {
-  map.events = eventService.getAllEventsForDay(new Date(event.detail.day));
-  stats.events = eventService.getAllEventsForDay(new Date(event.detail.day));
+  const events = eventService.getAllEventsTillTheDay(new Date(event.detail.day));
+  map.events = events;
+  stats.events = events;
 });
 
 stats.names = eventService.getAllNames();
