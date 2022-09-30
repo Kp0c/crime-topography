@@ -125,7 +125,7 @@ export class Map extends HTMLElement {
       const newLastDotIdx = Math.floor(progress * dots.length);
       const dotsToDraw = dots.slice(lastDotIdx, newLastDotIdx);
       lastDotIdx = newLastDotIdx;
-      console.log(dotsToDraw);
+
       dotsToDraw.forEach((dot) => {
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, 2, 0, 2 * Math.PI);
