@@ -91,3 +91,56 @@ h1 {
   left: 0;
   top: 0;
 }
+
+.map--background {
+  width: 100%;
+}
+
+@media screen and (max-width: 992px) {
+  .main-container {
+    padding: 56px 40px 72px;
+  }
+
+  .content {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .stats {
+    flex-direction: row;
+  }
+
+  .stats__item-count {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .stats__item-title {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  h1 {
+    font-size: 30px;
+    line-height: 35px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .stats {
+    flex-direction: column;
+  }
+
+  .main-container {
+    padding: 24px 24px 24px;
+  }
+
+  .content {
+    padding-top: 12px;
+    gap: 12px;
+  }
+
+  .chart td {
+    padding: 0;
+  }
+}

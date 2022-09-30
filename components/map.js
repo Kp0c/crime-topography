@@ -43,10 +43,20 @@ export class Map extends HTMLElement {
     const mapBackground = document.createElement('img');
     mapBackground.src = '/assets/images/ukraine-map.svg';
     mapBackground.alt = 'Ukraine map';
+    mapBackground.classList.add('map--background');
 
     this.#container.appendChild(mapBackground);
 
     shadow.appendChild(this.#container);
+
+    // respect resize with throttling
+    let resizeTimeout = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.#render();
+      }, 500);
+    });
   }
 
   connectedCallback() {
@@ -118,7 +128,7 @@ export class Map extends HTMLElement {
       console.log(dotsToDraw);
       dotsToDraw.forEach((dot) => {
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 3, 0, 2 * Math.PI);
+        ctx.arc(dot.x, dot.y, 2, 0, 2 * Math.PI);
         ctx.fillStyle = '#C00000';
         ctx.fill();
         ctx.closePath();
