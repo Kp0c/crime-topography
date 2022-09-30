@@ -67,6 +67,9 @@ export class Map extends HTMLElement {
       lonRange: ukraineBoundaries.lonMax - ukraineBoundaries.lonMin,
     };
 
+    // clear all dots from the map
+    this.#container.querySelectorAll('.map--dot').forEach((dot) => dot.remove());
+
     this.#events
       .filter((event) => event.lat && event.lon)
       .forEach(event => {
