@@ -149,11 +149,20 @@ export class Chart extends HTMLElement {
    * Toggles animation
    */
   #toggleAnimation() {
-    this.#isAnimationStarted = !this.#isAnimationStarted;
+    const newValue = !this.#isAnimationStarted;
 
     const button = this.shadowRoot.querySelector('img');
-    if (this.#isAnimationStarted) {
+    if (newValue) {
       button.src = '/assets/images/pause.svg';
+
+      if (this.#getBarPosition(this.#selectedBar) === Object.values(this.#events).length - 1) {
+        const firstBar = this.shadowRoot.querySelector('.chart td:first-child .chart__bar');
+        const day = firstBar.getAttribute('data-date');
+        this.#selectDay({
+          day,
+          isAnimationChange: false,
+        });
+      }
 
       this.#animationInterval = setInterval(() => {
         const res = this.#selectNextDay({
@@ -169,6 +178,8 @@ export class Chart extends HTMLElement {
 
       clearInterval(this.#animationInterval);
     }
+
+    this.#isAnimationStarted = !this.#isAnimationStarted;
   }
 
   /**
