@@ -23,29 +23,33 @@ window.customElements.define('ct-chart', Chart);
 window.customElements.define('ct-map', Map);
 window.customElements.define('ct-stats', Stats);
 
-const eventService = new EventsService();
-await eventService.init('/assets/data/events.json', '/assets/data/names.json', navigator.language);
+async function init() {
+  const eventService = new EventsService();
+  await eventService.init('/assets/data/events.json', '/assets/data/names.json', navigator.language);
 
-const chart = document.querySelector('ct-chart');
-const map = document.querySelector('ct-map');
-const stats = document.querySelector('ct-stats');
+  const chart = document.querySelector('ct-chart');
+  const map = document.querySelector('ct-map');
+  const stats = document.querySelector('ct-stats');
 
-chart.events = eventService.getLastDays(100);
+  chart.events = eventService.getLastDays(100);
 
-chart.addEventListener('day-selected', (event) => {
-  const {day, isAnimationChange} = event.detail;
+  chart.addEventListener('day-selected', (event) => {
+    const {day, isAnimationChange} = event.detail;
 
-  const events = isAnimationChange ? eventService.getAllEventsForTheDay(day) : eventService.getAllEventsTillTheDay(day);
+    const events = isAnimationChange ? eventService.getAllEventsForTheDay(day) : eventService.getAllEventsTillTheDay(day);
 
-  map.setEvents({
-    events,
-    isIncremental: isAnimationChange,
+    map.setEvents({
+      events,
+      isIncremental: isAnimationChange,
+    });
+
+    stats.setEvents({
+      events,
+      isIncremental: isAnimationChange,
+    });
   });
 
-  stats.setEvents({
-    events,
-    isIncremental: isAnimationChange,
-  });
-});
+  stats.names = eventService.getNames();
+}
 
-stats.names = eventService.getNames();
+init().catch(console.error);
