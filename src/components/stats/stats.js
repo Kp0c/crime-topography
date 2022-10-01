@@ -82,7 +82,7 @@ export class Stats extends HTMLElement {
       return;
     }
 
-    const statsElement = this.shadowRoot.querySelector('.stats');
+    const statsElement = this.shadowRoot.getElementById('stats');
     while (statsElement.firstChild) {
       statsElement.removeChild(statsElement.firstChild);
     }
@@ -130,7 +130,7 @@ export class Stats extends HTMLElement {
    * @returns {{statItem: HTMLElement, statItemValue: HTMLElement}} stat item elements
    */
   #createStatItemElement(affectedType) {
-    const statsElement = this.shadowRoot.querySelector('.stats');
+    const statsElement = this.shadowRoot.getElementById('stats');
     const name = this.#names.affected_type[affectedType];
 
     const statItem = document.createElement('div');

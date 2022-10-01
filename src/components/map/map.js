@@ -76,18 +76,18 @@ export class Map extends HTMLElement {
    * @private
    */
   #render() {
-    const canvasElem = this.shadowRoot.querySelector('canvas');
+    const canvasElem = this.shadowRoot.getElementById('canvas');
 
     const ctx = canvasElem.getContext('2d');
     ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
 
-    const container = this.shadowRoot.querySelector('.container');
+    const container = this.shadowRoot.getElementById('map-container');
     canvasElem.width = container.clientWidth;
     canvasElem.height = container.clientHeight;
 
     const dots = this.#eventsToDots(this.#events);
 
-    this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
+    this.#animateMap(dots, ANIMATION_DURATION);
   }
 
   /**
@@ -98,7 +98,7 @@ export class Map extends HTMLElement {
    * @returns {{x: number, y: number}[]} array of dots
    */
   #eventsToDots(events) {
-    const canvasElem = this.shadowRoot.querySelector('canvas');
+    const canvasElem = this.shadowRoot.getElementById('canvas');
 
     return events
       .filter((event) => event.lat && event.lon)
@@ -121,11 +121,9 @@ export class Map extends HTMLElement {
    * @param {CrimeEvent[]} newEvents new events
    */
   #renderIncremental(newEvents) {
-    const canvasElem = this.shadowRoot.querySelector('canvas');
-
     const dots = this.#eventsToDots(newEvents);
 
-    this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
+    this.#animateMap(dots, ANIMATION_DURATION);
   }
 
   /**
@@ -133,10 +131,11 @@ export class Map extends HTMLElement {
    *
    * @private
    * @param {{x: number, y: number}[]} dots dots to show (shown in the same order as in array)
-   * @param {HTMLCanvasElement} canvas canvas element
    * @param {number} duration animation duration
    */
-  #animateMap(dots, canvas, duration) {
+  #animateMap(dots, duration) {
+    const canvas = this.shadowRoot.getElementById('canvas');
+
     let startTimestamp = null;
     let lastDotIdx = 0;
     const step = (timestamp) => {

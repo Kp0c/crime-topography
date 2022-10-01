@@ -60,7 +60,7 @@ export class Chart extends HTMLElement {
     shadow.appendChild(style);
     shadow.appendChild(templateElem.content.cloneNode(true));
 
-    const button = this.shadowRoot.querySelector('img');
+    const button = this.shadowRoot.getElementById('animation-button');
     button.addEventListener('click', () => {
       this.#toggleAnimation();
     });
@@ -128,8 +128,8 @@ export class Chart extends HTMLElement {
    * @param {number} maxAffectedNumbers max affected numbers in all days (the highest column value)
    */
   #createColumns(sortedDates, maxAffectedNumbers) {
-    const barRow = this.shadowRoot.querySelector('.chart tr');
-    barRow.innerHTML = '';
+    const columnsRow = this.shadowRoot.getElementById('columns-row');
+    columnsRow.innerHTML = '';
 
     for (let i = 0; i < sortedDates.length; i++) {
       const todayEvents = this.#events[sortedDates[i]];
@@ -156,7 +156,7 @@ export class Chart extends HTMLElement {
       bar.style.height = `${height}%`;
 
       barData.appendChild(bar);
-      barRow.appendChild(barData);
+      columnsRow.appendChild(barData);
     }
   }
 
@@ -184,10 +184,11 @@ export class Chart extends HTMLElement {
   #toggleAnimation() {
     const newValue = !this.#isAnimationStarted;
 
-    const button = this.shadowRoot.querySelector('img');
+    const button = this.shadowRoot.getElementById('animation-button');
     if (newValue) {
       button.src = '/assets/images/pause.svg';
 
+      // start animation from the first day if last day is selected
       if (this.#getBarPosition(this.#selectedBar) === Object.values(this.#events).length - 1) {
         const firstBar = this.shadowRoot.querySelector('.chart td:first-child .chart-bar');
         const day = firstBar.getAttribute('data-date');
@@ -281,9 +282,9 @@ export class Chart extends HTMLElement {
    * @returns {number} bar position (with 100 columns it is in range 0-99)
    */
   #getBarPosition(barElement) {
-    const barRow = this.shadowRoot.querySelector('.chart tr');
-    const barRowChildren = Array.from(barRow.children);
-    return barRowChildren.indexOf(barElement.parentElement);
+    const columnsRow = this.shadowRoot.getElementById('columns-row');
+    const columnsRowChildren = Array.from(columnsRow.children);
+    return columnsRowChildren.indexOf(barElement.parentElement);
   }
 
   /**
