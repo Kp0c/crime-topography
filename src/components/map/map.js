@@ -1,5 +1,6 @@
 import template from './map.html?raw';
 import styles from './map.css?raw';
+import {ANIMATION_DURATION, UKRAINE_BOUNDARIES, UKRAINE_BOUNDARIES_RANGES} from "../../constants.js";
 
 const templateElem = document.createElement('template');
 templateElem.innerHTML = template;
@@ -15,13 +16,19 @@ export class Map extends HTMLElement {
   #events = [];
 
   /**
-   * set events and render
+   * set events for map
    *
-   * @param {CrimeEvent[]} events
+   * @param {CrimeEvent[]} events events
+   * @param {boolean} isIncremental is incremental update
    */
-  set events(events) {
-    this.#events = events;
-    this.#render();
+  setEvents({events, isIncremental}) {
+    if (!isIncremental) {
+      this.#events = events;
+      this.#render();
+    } else {
+      this.#events = this.#events.concat(events);
+      this.#renderIncremental(events);
+    }
   }
 
   constructor() {
@@ -51,18 +58,10 @@ export class Map extends HTMLElement {
     }
   }
 
+  /**
+   * Render map from the scratch
+   */
   #render() {
-    const ukraineBoundaries = {
-      latMin: 44.25,
-      latMax: 52.37,
-      lonMin: 22.25,
-      lonMax: 40.25,
-    };
-    const ranges = {
-      latRange: ukraineBoundaries.latMax - ukraineBoundaries.latMin,
-      lonRange: ukraineBoundaries.lonMax - ukraineBoundaries.lonMin,
-    };
-
     const canvasElem = this.shadowRoot.querySelector('canvas');
 
     const ctx = canvasElem.getContext('2d');
@@ -76,8 +75,8 @@ export class Map extends HTMLElement {
       .filter((event) => event.lat && event.lon)
       .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime())
       .map((event) => {
-        const x = (event.lon - ukraineBoundaries.lonMin) / ranges.lonRange * canvasElem.width;
-        const y = canvasElem.height - (event.lat - ukraineBoundaries.latMin) / ranges.latRange * canvasElem.height;
+        const x = (event.lon - UKRAINE_BOUNDARIES.lonMin) / UKRAINE_BOUNDARIES_RANGES.lonRange * canvasElem.width;
+        const y = canvasElem.height - (event.lat - UKRAINE_BOUNDARIES.latMin) / UKRAINE_BOUNDARIES_RANGES.latRange * canvasElem.height;
 
         return {
           x,
@@ -85,7 +84,32 @@ export class Map extends HTMLElement {
         };
       });
 
-    this.#animateMap(dots, canvasElem, 1000);
+    this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
+  }
+
+  /**
+   * Incremental rendering of map
+   *
+   * @param {CrimeEvent[]} newEvents new events
+   */
+  #renderIncremental(newEvents) {
+    const canvasElem = this.shadowRoot.querySelector('canvas');
+
+    // TODO: extract to separate method
+    const dots = newEvents
+      .filter((event) => event.lat && event.lon)
+      .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime())
+      .map((event) => {
+        const x = (event.lon - UKRAINE_BOUNDARIES.lonMin) / UKRAINE_BOUNDARIES_RANGES.lonRange * canvasElem.width;
+        const y = canvasElem.height - (event.lat - UKRAINE_BOUNDARIES.latMin) / UKRAINE_BOUNDARIES_RANGES.latRange * canvasElem.height;
+
+        return {
+          x,
+          y
+        };
+      });
+
+    this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
   }
 
   /**

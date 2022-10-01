@@ -24,6 +24,20 @@ td:not(td:has(.chart__bar.chart__bar--selected) ~ td:has(.chart__bar)) .chart__b
   background-color: #464646;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container img {
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+.container img:hover {
+  opacity: 0.5;
+}
+
 @media screen and (max-width: 768px) {
   .chart td {
     padding: 0;

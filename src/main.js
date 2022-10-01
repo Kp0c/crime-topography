@@ -33,9 +33,19 @@ const stats = document.querySelector('ct-stats');
 chart.events = eventService.getLastDays(100);
 
 chart.addEventListener('day-selected', (event) => {
-  const events = eventService.getAllEventsTillTheDay(new Date(event.detail.day));
-  map.events = events;
-  stats.events = events;
+  const {day, isAnimationChange} = event.detail;
+
+  const events = isAnimationChange ? eventService.getAllEventsForTheDay(day) : eventService.getAllEventsTillTheDay(day);
+
+  map.setEvents({
+    events,
+    isIncremental: isAnimationChange,
+  });
+
+  stats.setEvents({
+    events,
+    isIncremental: isAnimationChange,
+  });
 });
 
 stats.names = eventService.getAllNames();

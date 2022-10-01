@@ -64,6 +64,19 @@ export class EventsService {
   }
 
   /**
+   * Returns all events that happened at `date`
+   * @param {Date} date date
+   * @returns {CrimeEvent[]} crime events
+   */
+  getAllEventsForTheDay(date) {
+    const grouped = this.#getByDate();
+
+    const dateStr = date.toISOString();
+
+    return grouped[dateStr] ?? [];
+  }
+
+  /**
    * Returns all events that happened till the `date`
    * @param {Date} date date
    * @returns {CrimeEvent[]} crime events
