@@ -1,8 +1,8 @@
-import './style.css'
+import '../style.css'
 import {EventsService} from "./event.service.js";
-import {Chart} from "./components/chart.js";
-import {Map} from "./components/map.js";
-import {Stats} from "./components/stats.js";
+import {Chart} from "./components/chart/chart.js";
+import {Map} from "./components/map/map.js";
+import {Stats} from "./components/stats/stats.js";
 
 document.querySelector('#app').innerHTML = `
   <div class="main-container">

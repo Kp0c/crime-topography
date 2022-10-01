@@ -36,67 +36,12 @@ h1 {
   flex-direction: column;
 }
 
-.stats__item-count {
-  font-size: 40px;
-  line-height: 60px;
-  font-weight: 700;
-}
-
-.stats {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-.stats__item {
-  display: flex;
-  flex-direction: column;
-}
-
 .content {
   padding-top: 53px;
   display: flex;
   flex-direction: row;
   gap: 140px;
   flex-grow: 1;
-}
-
-.chart {
-  height: 150px;
-  width: 100%;
-}
-
-.chart td {
-  vertical-align: bottom;
-}
-
-.chart__bar {
-  background-color: #292929;
-  cursor: pointer;
-}
-
-.chart__bar--selected {
-  background-color: #737373;
-  cursor: pointer;
-}
-
-.chart__bar:hover {
-  background-color: #464646;
-}
-
-.map--container {
-  position: relative;
-}
-
-.map--canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.map--background {
-  width: 100%;
 }
 
 @media screen and (max-width: 992px) {
@@ -109,20 +54,6 @@ h1 {
     gap: 40px;
   }
 
-  .stats {
-    flex-direction: row;
-  }
-
-  .stats__item-count {
-    font-size: 24px;
-    line-height: 30px;
-  }
-
-  .stats__item-title {
-    font-size: 16px;
-    line-height: 24px;
-  }
-
   h1 {
     font-size: 30px;
     line-height: 35px;
@@ -130,10 +61,6 @@ h1 {
 }
 
 @media screen and (max-width: 768px) {
-  .stats {
-    flex-direction: column;
-  }
-
   .main-container {
     padding: 24px 24px 24px;
   }
@@ -141,9 +68,5 @@ h1 {
   .content {
     padding-top: 12px;
     gap: 12px;
-  }
-
-  .chart td {
-    padding: 0;
   }
 }

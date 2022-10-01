@@ -1,3 +1,9 @@
+import template from './stats.html?raw';
+import styles from './stats.css?raw';
+
+const templateElem = document.createElement('template');
+templateElem.innerHTML = template;
+
 export class Stats extends HTMLElement {
 
   /**
@@ -16,14 +22,6 @@ export class Stats extends HTMLElement {
    */
   #names = null;
 
-  /**
-   * Container
-   *
-   * @private
-   * @type {HTMLElement}
-   */
-  #container = null;
-
   set events(events) {
     this.#events = events;
     this.#render();
@@ -39,16 +37,11 @@ export class Stats extends HTMLElement {
 
     const shadow = this.attachShadow({mode: 'open'});
 
-    const linkElem = document.createElement('link');
-    linkElem.setAttribute('rel', 'stylesheet');
-    linkElem.setAttribute('href', 'style.css');
+    const style = document.createElement('style');
+    style.textContent = styles;
 
-    this.#container = document.createElement('div');
-    this.#container.classList.add('stats-container');
-
-    shadow.appendChild(this.#container);
-
-    shadow.appendChild(linkElem);
+    shadow.appendChild(style);
+    shadow.appendChild(templateElem.content.cloneNode(true));
   }
 
   connectedCallback() {
@@ -62,12 +55,10 @@ export class Stats extends HTMLElement {
       return;
     }
 
-    while (this.#container.firstChild) {
-      this.#container.removeChild(this.#container.firstChild);
+    const statsElement = this.shadowRoot.querySelector('.stats');
+    while (statsElement.firstChild) {
+      statsElement.removeChild(statsElement.firstChild);
     }
-
-    const stats = document.createElement('div');
-    stats.classList.add('stats');
 
     // group events by affected_type
     const affectedTypes = this.#events
@@ -106,10 +97,8 @@ export class Stats extends HTMLElement {
       statItem.appendChild(statItemValue);
       statItem.appendChild(statItemTitle);
 
-      stats.appendChild(statItem);
+      statsElement.appendChild(statItem);
     });
-
-    this.#container.appendChild(stats);
   }
 
   /**

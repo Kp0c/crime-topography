@@ -1,0 +1,28 @@
+.chart {
+  height: 150px;
+  width: 100%;
+}
+
+.chart td {
+  vertical-align: bottom;
+}
+
+.chart__bar {
+  background-color: #292929;
+  cursor: pointer;
+}
+
+.chart__bar--selected {
+  background-color: #737373;
+  cursor: pointer;
+}
+
+.chart__bar:hover {
+  background-color: #464646;
+}
+
+@media screen and (max-width: 768px) {
+  .chart td {
+    padding: 0;
+  }
+}

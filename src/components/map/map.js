@@ -1,3 +1,9 @@
+import template from './map.html?raw';
+import styles from './map.css?raw';
+
+const templateElem = document.createElement('template');
+templateElem.innerHTML = template;
+
 export class Map extends HTMLElement {
 
   /**
@@ -7,14 +13,6 @@ export class Map extends HTMLElement {
    * @type {CrimeEvent[]}
    */
   #events = [];
-
-  /**
-   * Container
-   *
-   * @private
-   * @type {HTMLElement}
-   */
-  #container = null;
 
   /**
    * set events and render
@@ -31,23 +29,11 @@ export class Map extends HTMLElement {
 
     const shadow = this.attachShadow({mode: 'open'});
 
-    const linkElem = document.createElement('link');
-    linkElem.setAttribute('rel', 'stylesheet');
-    linkElem.setAttribute('href', 'style.css');
+    const style = document.createElement('style');
+    style.textContent = styles;
 
-    this.#container = document.createElement('div');
-    this.#container.classList.add('map--container');
-
-    shadow.appendChild(linkElem);
-
-    const mapBackground = document.createElement('img');
-    mapBackground.src = '/assets/images/ukraine-map.svg';
-    mapBackground.alt = 'Ukraine map';
-    mapBackground.classList.add('map--background');
-
-    this.#container.appendChild(mapBackground);
-
-    shadow.appendChild(this.#container);
+    shadow.appendChild(style);
+    shadow.appendChild(templateElem.content.cloneNode(true));
 
     // respect resize with throttling
     let resizeTimeout = null;
@@ -77,19 +63,14 @@ export class Map extends HTMLElement {
       lonRange: ukraineBoundaries.lonMax - ukraineBoundaries.lonMin,
     };
 
-    // clear child canvas
-    const canvas = this.#container.querySelector('canvas');
-    if (canvas) {
-      this.#container.removeChild(canvas);
-    }
+    const canvasElem = this.shadowRoot.querySelector('canvas');
 
-    const canvasElem = document.createElement('canvas');
+    const ctx = canvasElem.getContext('2d');
+    ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
 
-    canvasElem.classList.add('map--canvas');
-    canvasElem.width = this.#container.clientWidth;
-    canvasElem.height = this.#container.clientHeight;
-
-    this.#container.appendChild(canvasElem);
+    const container = this.shadowRoot.querySelector('.map--container');
+    canvasElem.width = container.clientWidth;
+    canvasElem.height = container.clientHeight;
 
     const dots = this.#events
       .filter((event) => event.lat && event.lon)

@@ -1,3 +1,9 @@
+import template from './chart.html?raw';
+import styles from './chart.css?raw';
+
+const templateElem = document.createElement('template');
+templateElem.innerHTML = template;
+
 export class Chart extends HTMLElement {
 
   /**
@@ -24,11 +30,11 @@ export class Chart extends HTMLElement {
 
     const shadow = this.attachShadow({mode: 'open'});
 
-    const linkElem = document.createElement('link');
-    linkElem.setAttribute('rel', 'stylesheet');
-    linkElem.setAttribute('href', 'style.css');
+    const style = document.createElement('style');
+    style.textContent = styles;
 
-    shadow.appendChild(linkElem);
+    shadow.appendChild(style);
+    shadow.appendChild(templateElem.content.cloneNode(true));
   }
 
   connectedCallback() {
@@ -38,10 +44,8 @@ export class Chart extends HTMLElement {
   }
 
   #render() {
-    const chart = document.createElement('table');
-    chart.classList.add('chart');
-
-    const barRow = document.createElement('tr');
+    const barRow = this.shadowRoot.querySelector('.chart tr');
+    barRow.innerHTML = '';
 
     const maxAffectedNumbers = Object.values(this.#events).reduce((acc, dayEvents) => {
       const affectedNumber = dayEvents.reduce((acc, event) => {
@@ -82,21 +86,13 @@ export class Chart extends HTMLElement {
         return acc + event.affected_number_sum;
       }, 0);
 
-      const height = Math.round(100 * affectedNumber / maxAffectedNumbers);
+      // calculate bar height with min height 5%
+      const height = Math.max(Math.round(affectedNumber / maxAffectedNumbers * 100), 5);
       bar.style.height = `${height}%`;
 
       barData.appendChild(bar);
       barRow.appendChild(barData);
     }
-
-    chart.appendChild(barRow);
-
-    const previousTable = this.shadowRoot.querySelector('table');
-    if (previousTable) {
-      this.shadowRoot.removeChild(previousTable);
-    }
-
-    this.shadowRoot.appendChild(chart);
 
     setTimeout(() => {
       this.#selectLastDay();
