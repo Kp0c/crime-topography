@@ -1,4 +1,4 @@
-.stats__item-count {
+.stats-item-count {
   font-size: 40px;
   line-height: 60px;
   font-weight: 700;
@@ -11,7 +11,7 @@
   margin-bottom: 40px;
 }
 
-.stats__item {
+.stats-item {
   display: flex;
   flex-direction: column;
 }
@@ -21,12 +21,12 @@
     flex-direction: row;
   }
 
-  .stats__item-count {
+  .stats-item-count {
     font-size: 24px;
     line-height: 30px;
   }
 
-  .stats__item-title {
+  .stats-item-title {
     font-size: 16px;
     line-height: 24px;
   }

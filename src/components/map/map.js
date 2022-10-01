@@ -81,7 +81,7 @@ export class Map extends HTMLElement {
     const ctx = canvasElem.getContext('2d');
     ctx.clearRect(0, 0, canvasElem.width, canvasElem.height);
 
-    const container = this.shadowRoot.querySelector('.map--container');
+    const container = this.shadowRoot.querySelector('.container');
     canvasElem.width = container.clientWidth;
     canvasElem.height = container.clientHeight;
 

@@ -65,11 +65,11 @@ export class Chart extends HTMLElement {
       this.#toggleAnimation();
     });
 
-    const slider = this.shadowRoot.getElementById('#slider');
+    const slider = this.shadowRoot.getElementById('slider');
 
     // Performance optimization: fire day select only when user stops sliding
     slider.addEventListener('change', () => {
-      const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
+      const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart-bar`);
       const date = bar.getAttribute('data-date');
       this.#selectDay({
         day: date,
@@ -112,7 +112,7 @@ export class Chart extends HTMLElement {
 
     this.#createColumns(sortedDates, maxAffectedNumbers);
 
-    const slider = this.shadowRoot.getElementById('#slider');
+    const slider = this.shadowRoot.getElementById('slider');
     slider.max = sortedDates.length - 1;
 
     setTimeout(() => {
@@ -136,7 +136,7 @@ export class Chart extends HTMLElement {
       const barData = document.createElement('td');
       const bar = document.createElement('div');
 
-      bar.classList.add('chart__bar');
+      bar.classList.add('chart-bar');
 
       bar.setAttribute('data-date', sortedDates[i]);
 
@@ -166,7 +166,7 @@ export class Chart extends HTMLElement {
    * @private
    */
   #selectLastDay() {
-    const lastBar = this.shadowRoot.querySelector('.chart td:last-child .chart__bar');
+    const lastBar = this.shadowRoot.querySelector('.chart td:last-child .chart-bar');
     if (lastBar) {
       const date = lastBar.getAttribute('data-date');
       this.#selectDay({
@@ -189,7 +189,7 @@ export class Chart extends HTMLElement {
       button.src = '/assets/images/pause.svg';
 
       if (this.#getBarPosition(this.#selectedBar) === Object.values(this.#events).length - 1) {
-        const firstBar = this.shadowRoot.querySelector('.chart td:first-child .chart__bar');
+        const firstBar = this.shadowRoot.querySelector('.chart td:first-child .chart-bar');
         const day = firstBar.getAttribute('data-date');
         this.#selectDay({
           day,
@@ -225,7 +225,7 @@ export class Chart extends HTMLElement {
    * @return {boolean} is next day selected. False means that no next bar exists
    */
   #selectNextDay({isAnimationChange}) {
-    const nextBar = this.#selectedBar.parentElement.nextElementSibling?.querySelector('.chart__bar');
+    const nextBar = this.#selectedBar.parentElement.nextElementSibling?.querySelector('.chart-bar');
     if (nextBar) {
       const date = nextBar.getAttribute('data-date');
       this.#selectDay({
@@ -260,16 +260,16 @@ export class Chart extends HTMLElement {
     }));
 
     if (this.#selectedBar) {
-      this.#selectedBar.classList.remove('chart__bar--selected');
+      this.#selectedBar.classList.remove('chart-bar-selected');
     }
 
-    this.#selectedBar = this.shadowRoot.querySelector(`.chart__bar[data-date="${day}"]`);
+    this.#selectedBar = this.shadowRoot.querySelector(`.chart-bar[data-date="${day}"]`);
 
-    const slider = this.shadowRoot.getElementById('#slider');
+    const slider = this.shadowRoot.getElementById('slider');
     slider.value = this.#getBarPosition(this.#selectedBar);
     this.#updateSliderOutput();
 
-    this.#selectedBar.classList.add('chart__bar--selected');
+    this.#selectedBar.classList.add('chart-bar-selected');
   }
 
   /**
@@ -292,12 +292,12 @@ export class Chart extends HTMLElement {
    * @private
    */
   #updateSliderOutput() {
-    const slider = this.shadowRoot.getElementById('#slider');
+    const slider = this.shadowRoot.getElementById('slider');
 
-    const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
+    const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart-bar`);
     const date = new Date(bar.getAttribute('data-date'));
 
-    const sliderOutput = this.shadowRoot.getElementById('#slider-output');
+    const sliderOutput = this.shadowRoot.getElementById('slider-output');
     // noinspection JSCheckFunctionSignatures
     sliderOutput.textContent = new Intl.DateTimeFormat(window.navigator.language, {
       dateStyle: 'medium',

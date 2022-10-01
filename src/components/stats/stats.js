@@ -134,15 +134,15 @@ export class Stats extends HTMLElement {
     const name = this.#names.affected_type[affectedType];
 
     const statItem = document.createElement('div');
-    statItem.classList.add('stats__item');
+    statItem.classList.add('stats-item');
     statItem.setAttribute('data-affected-type', affectedType);
 
     const statItemTitle = document.createElement('span');
-    statItemTitle.classList.add('stats__item-title');
+    statItemTitle.classList.add('stats-item-title');
     statItemTitle.textContent = name;
 
     const statItemValue = document.createElement('span');
-    statItemValue.classList.add('stats__item-count');
+    statItemValue.classList.add('stats-item-count');
 
     statItem.appendChild(statItemValue);
     statItem.appendChild(statItemTitle);
@@ -172,7 +172,7 @@ export class Stats extends HTMLElement {
         statItem = this.#createStatItemElement(affectedType).statItem;
       }
 
-      const statItemValue = statItem.querySelector('.stats__item-count');
+      const statItemValue = statItem.querySelector('.stats-item-count');
 
       const count = affectedTypes[affectedType].reduce((acc, event) => {
         return acc + event.affected_number_sum;

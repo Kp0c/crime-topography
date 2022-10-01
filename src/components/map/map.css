@@ -1,8 +1,8 @@
-.map--container {
+.container {
   position: relative;
 }
 
-.map--canvas {
+.dots-canvas {
   position: absolute;
   left: 0;
   top: 0;
@@ -10,7 +10,7 @@
   height: 100%;
 }
 
-.map--background {
+.background-map {
   width: 100%;
   display: block;
 }
