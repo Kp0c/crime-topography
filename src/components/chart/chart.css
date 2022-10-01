@@ -14,10 +14,13 @@
 
 .chart__bar--selected {
   background-color: #737373;
-  cursor: pointer;
 }
 
-.chart__bar:hover {
+td:not(td:has(.chart__bar.chart__bar--selected) ~ td:has(.chart__bar)) .chart__bar:not(.chart__bar--selected):not(:hover) {
+  background-color: #353535;
+}
+
+.chart__bar:hover:not(.chart__bar--selected) {
   background-color: #464646;
 }
 
