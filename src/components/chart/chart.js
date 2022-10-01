@@ -245,7 +245,9 @@ export class Chart extends HTMLElement {
     const date = new Date(bar.getAttribute('data-date'));
 
     const sliderOutput = this.shadowRoot.querySelector('#slider-output');
-    sliderOutput.textContent = date.toLocaleDateString();
+    sliderOutput.textContent = new Intl.DateTimeFormat(window.navigator.language, {
+      dateStyle: 'medium',
+    }).format(date);
     const newVal = slider.value / slider.max * 100;
 
     // Magic numbers to always keep the bubble centered

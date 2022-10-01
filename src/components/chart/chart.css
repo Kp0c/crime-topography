@@ -52,6 +52,10 @@ td:not(td:has(.chart__bar.chart__bar--selected) ~ td:has(.chart__bar)) .chart__b
 .slider-output {
   position: absolute;
   transform: translateX(-50%);
+  padding: 4px 8px;
+  background: #222222;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .slider::-webkit-slider-thumb {
@@ -63,7 +67,16 @@ td:not(td:has(.chart__bar.chart__bar--selected) ~ td:has(.chart__bar)) .chart__b
   background-image: url('/assets/images/slider-thumb.svg');
 }
 
+@media screen and (max-width: 992px) {
+  .container {
+    padding: 0 10px;
+  }
+}
+
 @media screen and (max-width: 768px) {
+  .container {
+    padding: 0 25px;
+  }
   .chart td {
     padding: 0;
   }

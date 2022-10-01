@@ -15,6 +15,13 @@ I'm using component based approach with custom elements. All components are in `
 
 `constants.js` contains generic constants for the app. 
 
+## Available functionality
+- The map is rendered with markers for each crime
+- The stats are rendered with the number of crimes (`affected_number`) per category (`affected_type`)
+- The chart is rendered with the last 100 days crimes (1 day/column) with height that depends on `affected_number`
+- User can select the date by the bar click or slider drag. It will show all crime since the beginning of the war till the selected day.
+- User can run the animation by clicking on the play button
+
 ## How to run
 1. Clone the repo
 2. Run `npm install`

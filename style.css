@@ -44,6 +44,10 @@ h1 {
   flex-grow: 1;
 }
 
+.map-container {
+  flex-grow: 1;
+}
+
 @media screen and (max-width: 992px) {
   .main-container {
     padding: 56px 40px 72px;
