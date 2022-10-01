@@ -201,6 +201,10 @@ export class Chart extends HTMLElement {
    * @param {boolean} params.isAnimationChange
    */
   #selectDay({day, isAnimationChange}) {
+    if (!isAnimationChange && this.#isAnimationStarted) {
+      this.#toggleAnimation();
+    }
+
     const dayDate = new Date(day);
     this.dispatchEvent(new CustomEvent('day-selected', {
       detail: {

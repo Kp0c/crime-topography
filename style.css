@@ -46,6 +46,7 @@ h1 {
 
 .map-container {
   flex-grow: 1;
+  max-width: 1000px;
 }
 
 @media screen and (max-width: 992px) {

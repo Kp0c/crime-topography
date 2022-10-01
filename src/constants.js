@@ -1,9 +1,9 @@
 export const ANIMATION_DURATION = 1000;
 
 export const UKRAINE_BOUNDARIES = {
-  latMin: 44.25,
+  latMin: 44.3615,
   latMax: 52.37,
-  lonMin: 22.25,
+  lonMin: 22.1456,
   lonMax: 40.25,
 };
 export const UKRAINE_BOUNDARIES_RANGES = {
