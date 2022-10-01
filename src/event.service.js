@@ -20,18 +20,23 @@
 export class EventsService {
   /**
    * all events
+   *
+   * @private
    * @type {CrimeEvent[]}
    */
   #events = [];
 
   /**
    * all names
+   *
+   * @private
    * @type {Name}
    */
   #names = {};
 
   /**
    * Initializes data
+   *
    * @param {string} dataUrl url to data
    * @param {string} translationUrl url to translation
    * @param {string} language language
@@ -44,6 +49,7 @@ export class EventsService {
 
   /**
    * Returns all events grouped by date for last `daysCount` days
+   *
    * @param {number} daysCount days to return
    * @returns {Record<string, CrimeEvent[]>} crime events grouped by date
    */
@@ -65,6 +71,7 @@ export class EventsService {
 
   /**
    * Returns all events that happened at `date`
+   *
    * @param {Date} date date
    * @returns {CrimeEvent[]} crime events
    */
@@ -78,6 +85,7 @@ export class EventsService {
 
   /**
    * Returns all events that happened till the `date`
+   *
    * @param {Date} date date
    * @returns {CrimeEvent[]} crime events
    */
@@ -96,7 +104,17 @@ export class EventsService {
   }
 
   /**
+   * Returns names
+   * @returns {Name} names
+   */
+  getNames() {
+    return this.#names;
+  }
+
+  /**
    * Returns all events grouped by date
+   *
+   * @private
    * @returns {Record<string, CrimeEvent[]>} crime events grouped by date
    */
   #getByDate(){
@@ -115,6 +133,8 @@ export class EventsService {
 
   /**
    * Load events from url
+   *
+   * @private
    * @param {string} dataUrl
    * @returns {Promise<CrimeEvent[]>} crime events
    */
@@ -136,6 +156,8 @@ export class EventsService {
 
   /**
    * Load names from url
+   *
+   * @private
    * @param {string} translationUrl url to translation
    * @param {string} language language
    * @returns {Promise<Name>} names
@@ -155,9 +177,5 @@ export class EventsService {
     }
 
     return data[languageKey];
-  }
-
-  getAllNames() {
-    return this.#names;
   }
 }

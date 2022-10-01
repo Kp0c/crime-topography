@@ -16,7 +16,7 @@ export class Map extends HTMLElement {
   #events = [];
 
   /**
-   * animation id
+   * current animation id
    *
    * @private
    * @type {number|null}
@@ -50,7 +50,7 @@ export class Map extends HTMLElement {
     shadow.appendChild(style);
     shadow.appendChild(templateElem.content.cloneNode(true));
 
-    // respect resize with throttling
+    // respect resize with throttling for performance reasons
     let resizeTimeout = null;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
@@ -60,6 +60,10 @@ export class Map extends HTMLElement {
     });
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * it is called by browser when element is connected to DOM
+   */
   connectedCallback() {
     if (this.isConnected) {
       this.#render();
@@ -68,6 +72,8 @@ export class Map extends HTMLElement {
 
   /**
    * Render map from the scratch
+   *
+   * @private
    */
   #render() {
     const canvasElem = this.shadowRoot.querySelector('canvas');
@@ -79,32 +85,22 @@ export class Map extends HTMLElement {
     canvasElem.width = container.clientWidth;
     canvasElem.height = container.clientHeight;
 
-    const dots = this.#events
-      .filter((event) => event.lat && event.lon)
-      .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime())
-      .map((event) => {
-        const x = (event.lon - UKRAINE_BOUNDARIES.lonMin) / UKRAINE_BOUNDARIES_RANGES.lonRange * canvasElem.width;
-        const y = canvasElem.height - (event.lat - UKRAINE_BOUNDARIES.latMin) / UKRAINE_BOUNDARIES_RANGES.latRange * canvasElem.height;
-
-        return {
-          x,
-          y
-        };
-      });
+    const dots = this.#eventsToDots(this.#events);
 
     this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
   }
 
   /**
-   * Incremental rendering of map
+   * transform events to dots
    *
-   * @param {CrimeEvent[]} newEvents new events
+   * @private
+   * @param {CrimeEvent[]} events events to transform
+   * @returns {{x: number, y: number}[]} array of dots
    */
-  #renderIncremental(newEvents) {
+  #eventsToDots(events) {
     const canvasElem = this.shadowRoot.querySelector('canvas');
 
-    // TODO: extract to separate method
-    const dots = newEvents
+    return events
       .filter((event) => event.lat && event.lon)
       .sort((a, b) => new Date(a.from).getTime() - new Date(b.from).getTime())
       .map((event) => {
@@ -116,13 +112,27 @@ export class Map extends HTMLElement {
           y
         };
       });
+  }
+
+  /**
+   * Incremental rendering of map
+   *
+   * @private
+   * @param {CrimeEvent[]} newEvents new events
+   */
+  #renderIncremental(newEvents) {
+    const canvasElem = this.shadowRoot.querySelector('canvas');
+
+    const dots = this.#eventsToDots(newEvents);
 
     this.#animateMap(dots, canvasElem, ANIMATION_DURATION);
   }
 
   /**
    * Animate dots on map
-   * @param {{x: number, y: number}[]} dots dots to show (must be in order)
+   *
+   * @private
+   * @param {{x: number, y: number}[]} dots dots to show (shown in the same order as in array)
    * @param {HTMLCanvasElement} canvas canvas element
    * @param {number} duration animation duration
    */

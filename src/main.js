@@ -48,4 +48,4 @@ chart.addEventListener('day-selected', (event) => {
   });
 });
 
-stats.names = eventService.getAllNames();
+stats.names = eventService.getNames();

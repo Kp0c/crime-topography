@@ -2,6 +2,7 @@
 Created for Dev Challenge XIX
 
 ## Description
+This project is a map of war crimes that the Russia (terrorist state) has committed in Ukraine.
 
 ## Technical information
 The solution is based on pure vanilla js with no libs using [Vite](https://vitejs.dev/) as a bundler.
@@ -12,6 +13,8 @@ I'm using component based approach with custom elements. All components are in `
 - The `ct-chart` component is responsible for rendering the chart and also it is a controller for animations
 
 `main.js` wires all the components together.
+
+`event.service.js` is responsible for receiving data from the server and mutating it into more convenient format.
 
 `constants.js` contains generic constants for the app. 
 

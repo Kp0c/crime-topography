@@ -11,29 +11,39 @@ export class Chart extends HTMLElement {
    * events grouped by date to render
    *
    * @private
-   * @type {Record<string, CrimeEvent>}
+   * @type {Record<string, CrimeEvent[]>}
    */
   #events = {};
 
   /**
    * currently selected bar
+   *
+   * @private
    * @type {Element}
    */
   #selectedBar = null;
 
   /**
    * is animation started
+   *
+   * @private
    * @type {boolean}
    */
   #isAnimationStarted = false;
 
   /**
    * animation interval id
+   *
+   * @private
    * @type {null|number}
    */
   #animationInterval = null;
 
   // noinspection JSUnusedGlobalSymbols
+  /**
+   * set events to show
+   * @param {Record<string, CrimeEvent[]>} events
+   */
   set events(events) {
     this.#events = events;
     this.#render();
@@ -55,9 +65,9 @@ export class Chart extends HTMLElement {
       this.#toggleAnimation();
     });
 
-    const slider = this.shadowRoot.querySelector('#slider');
+    const slider = this.shadowRoot.getElementById('#slider');
 
-    // Performance optimization: fire day select when user stops sliding
+    // Performance optimization: fire day select only when user stops sliding
     slider.addEventListener('change', () => {
       const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
       const date = bar.getAttribute('data-date');
@@ -68,21 +78,26 @@ export class Chart extends HTMLElement {
     });
 
     slider.addEventListener('input', () => {
-      this.#updateSliderBubble();
+      this.#updateSliderOutput();
     })
   }
 
-// noinspection JSUnusedGlobalSymbols
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * it is called by browser when element is connected to DOM
+   */
   connectedCallback() {
     if (this.isConnected) {
       this.#render();
     }
   }
 
+  /**
+   * Renders the chart
+   *
+   * @private
+   */
   #render() {
-    const barRow = this.shadowRoot.querySelector('.chart tr');
-    barRow.innerHTML = '';
-
     const maxAffectedNumbers = Object.values(this.#events).reduce((acc, dayEvents) => {
       const affectedNumber = dayEvents.reduce((acc, event) => {
         return event.affected_number ? acc + event.affected_number_sum : acc;
@@ -95,7 +110,28 @@ export class Chart extends HTMLElement {
       return new Date(a).getTime() - new Date(b).getTime();
     });
 
-    for(let i = 0; i < sortedDates.length; i++) {
+    this.#createColumns(sortedDates, maxAffectedNumbers);
+
+    const slider = this.shadowRoot.getElementById('#slider');
+    slider.max = sortedDates.length - 1;
+
+    setTimeout(() => {
+      this.#selectLastDay();
+    });
+  }
+
+  /**
+   * Create columns for the chart
+   *
+   * @private
+   * @param {string[]} sortedDates sorted dates (these are keys for `#events`)
+   * @param {number} maxAffectedNumbers max affected numbers in all days (the highest column value)
+   */
+  #createColumns(sortedDates, maxAffectedNumbers) {
+    const barRow = this.shadowRoot.querySelector('.chart tr');
+    barRow.innerHTML = '';
+
+    for (let i = 0; i < sortedDates.length; i++) {
       const todayEvents = this.#events[sortedDates[i]];
       const barData = document.createElement('td');
       const bar = document.createElement('div');
@@ -122,17 +158,12 @@ export class Chart extends HTMLElement {
       barData.appendChild(bar);
       barRow.appendChild(barData);
     }
-
-    const slider = this.shadowRoot.querySelector('#slider');
-    slider.max = sortedDates.length - 1;
-
-    setTimeout(() => {
-      this.#selectLastDay();
-    });
   }
 
   /**
    * Selects last day in chart
+   *
+   * @private
    */
   #selectLastDay() {
     const lastBar = this.shadowRoot.querySelector('.chart td:last-child .chart__bar');
@@ -147,6 +178,8 @@ export class Chart extends HTMLElement {
 
   /**
    * Toggles animation
+   *
+   * @private
    */
   #toggleAnimation() {
     const newValue = !this.#isAnimationStarted;
@@ -185,10 +218,11 @@ export class Chart extends HTMLElement {
   /**
    * Selects next day in chart
    *
+   * @private
    * @param {object} params
    * @param {boolean} params.isAnimationChange
    *
-   * @return {boolean} is next day selected
+   * @return {boolean} is next day selected. False means that no next bar exists
    */
   #selectNextDay({isAnimationChange}) {
     const nextBar = this.#selectedBar.parentElement.nextElementSibling?.querySelector('.chart__bar');
@@ -207,6 +241,7 @@ export class Chart extends HTMLElement {
   /**
    * Select day
    *
+   * @private
    * @param {object} params
    * @param {string} params.day
    * @param {boolean} params.isAnimationChange
@@ -230,9 +265,9 @@ export class Chart extends HTMLElement {
 
     this.#selectedBar = this.shadowRoot.querySelector(`.chart__bar[data-date="${day}"]`);
 
-    const slider = this.shadowRoot.querySelector('#slider');
+    const slider = this.shadowRoot.getElementById('#slider');
     slider.value = this.#getBarPosition(this.#selectedBar);
-    this.#updateSliderBubble();
+    this.#updateSliderOutput();
 
     this.#selectedBar.classList.add('chart__bar--selected');
   }
@@ -240,6 +275,7 @@ export class Chart extends HTMLElement {
   /**
    * Returns bar position
    *
+   * @private
    * @param {Element} barElement bar element
    *
    * @returns {number} bar position (with 100 columns it is in range 0-99)
@@ -252,20 +288,23 @@ export class Chart extends HTMLElement {
 
   /**
    * Updates slider bubble
+   *
+   * @private
    */
-  #updateSliderBubble() {
-    const slider = this.shadowRoot.querySelector('#slider');
+  #updateSliderOutput() {
+    const slider = this.shadowRoot.getElementById('#slider');
 
     const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
     const date = new Date(bar.getAttribute('data-date'));
 
-    const sliderOutput = this.shadowRoot.querySelector('#slider-output');
+    const sliderOutput = this.shadowRoot.getElementById('#slider-output');
+    // noinspection JSCheckFunctionSignatures
     sliderOutput.textContent = new Intl.DateTimeFormat(window.navigator.language, {
       dateStyle: 'medium',
     }).format(date);
     const newVal = slider.value / slider.max * 100;
 
-    // Magic numbers to always keep the bubble centered
+    // Magic numbers to always keep the output centered
     sliderOutput.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
   }
 }

@@ -23,11 +23,23 @@ export class Stats extends HTMLElement {
    */
   #names = null;
 
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * Set names
+   *
+   * @param {Name} names
+   */
   set names(names) {
     this.#names = names;
     this.#render();
   }
 
+  /**
+   * set events for stats
+   *
+   * @param {CrimeEvent[]} events events
+   * @param {boolean} isIncremental is incremental update
+   */
   setEvents({events, isIncremental}) {
     if (!isIncremental) {
       this.#events = events;
@@ -50,12 +62,21 @@ export class Stats extends HTMLElement {
     shadow.appendChild(templateElem.content.cloneNode(true));
   }
 
+  // noinspection JSUnusedGlobalSymbols
+  /**
+   * it is called by browser when element is connected to DOM
+   */
   connectedCallback() {
     if (this.isConnected) {
       this.#render();
     }
   }
 
+  /**
+   * render stats
+   *
+   * @private
+   */
   #render() {
     if (this.#events.length === 0 || this.#names === null) {
       return;
@@ -66,33 +87,11 @@ export class Stats extends HTMLElement {
       statsElement.removeChild(statsElement.firstChild);
     }
 
-    // group events by affected_type
-    const affectedTypes = this.#events
-      .filter((event) => event.affected_type !== null)
-      .reduce((acc, event) => {
-      if (acc[event.affected_type]) {
-        acc[event.affected_type].push(event);
-      } else {
-        acc[event.affected_type] = [event];
-      }
-
-      return acc;
-    }, {});
+    const affectedTypes = this.#groupByAffectedType();
 
     // for each affected type
     Object.keys(affectedTypes).forEach((affectedType) => {
-      const name = this.#names.affected_type[affectedType];
-
-      const statItem = document.createElement('div');
-      statItem.classList.add('stats__item');
-      statItem.setAttribute('data-affected-type', affectedType);
-
-      const statItemTitle = document.createElement('span');
-      statItemTitle.classList.add('stats__item-title');
-      statItemTitle.textContent = name;
-
-      const statItemValue = document.createElement('span');
-      statItemValue.classList.add('stats__item-count');
+      const {statItemValue} = this.#createStatItemElement(affectedType);
 
       const count = affectedTypes[affectedType].reduce((acc, event) => {
         return acc + event.affected_number_sum;
@@ -100,25 +99,17 @@ export class Stats extends HTMLElement {
 
       // statItemValue.textContent = count.toString()
       this.#animateValue(statItemValue, 0, count, ANIMATION_DURATION);
-
-      statItem.appendChild(statItemValue);
-      statItem.appendChild(statItemTitle);
-
-      statsElement.appendChild(statItem);
     });
   }
 
   /**
-   * Renders incremental update
-   * @param {CrimeEvent[]} newEvents new events
+   * group `#events` by affected_type
+   *
+   * @private
+   * @returns {Record<number, CrimeEvent[]>}
    */
-  #renderIncremental(newEvents) {
-    if (this.#events.length === 0 || this.#names === null) {
-      return;
-    }
-
-    // group events by affected_type
-    const affectedTypes = this.#events
+  #groupByAffectedType() {
+    return this.#events
       .filter((event) => event.affected_type !== null)
       .reduce((acc, event) => {
         if (acc[event.affected_type]) {
@@ -129,25 +120,56 @@ export class Stats extends HTMLElement {
 
         return acc;
       }, {});
+  }
+
+  /**
+   * Creates stat item element
+   *
+   * @private
+   * @param {string} affectedType affected type
+   * @returns {{statItem: HTMLElement, statItemValue: HTMLElement}} stat item elements
+   */
+  #createStatItemElement(affectedType) {
+    const statsElement = this.shadowRoot.querySelector('.stats');
+    const name = this.#names.affected_type[affectedType];
+
+    const statItem = document.createElement('div');
+    statItem.classList.add('stats__item');
+    statItem.setAttribute('data-affected-type', affectedType);
+
+    const statItemTitle = document.createElement('span');
+    statItemTitle.classList.add('stats__item-title');
+    statItemTitle.textContent = name;
+
+    const statItemValue = document.createElement('span');
+    statItemValue.classList.add('stats__item-count');
+
+    statItem.appendChild(statItemValue);
+    statItem.appendChild(statItemTitle);
+    statsElement.appendChild(statItem);
+
+    return {statItem, statItemValue};
+  }
+
+  /**
+   * Renders incremental update
+   *
+   * @private
+   * @param {CrimeEvent[]} newEvents new events
+   */
+  #renderIncremental(newEvents) {
+    if (this.#events.length === 0 || this.#names === null) {
+      return;
+    }
+
+    const affectedTypes = this.#groupByAffectedType();
 
     // for each affected type
     Object.keys(affectedTypes).forEach((affectedType) => {
-      const name = this.#names.affected_type[affectedType];
-
-      const statItem = this.shadowRoot.querySelector(`[data-affected-type="${affectedType}"]`);
+      let statItem = this.shadowRoot.querySelector(`[data-affected-type="${affectedType}"]`);
 
       if (!statItem) {
-        // TODO: extract to method
-        const statItem = document.createElement('div');
-        statItem.classList.add('stats__item');
-        statItem.setAttribute('data-affected-type', affectedType);
-
-        const statItemTitle = document.createElement('span');
-        statItemTitle.classList.add('stats__item-title');
-        statItemTitle.textContent = name;
-
-        const statItemValue = document.createElement('span');
-        statItemValue.classList.add('stats__item-count');
+        statItem = this.#createStatItemElement(affectedType).statItem;
       }
 
       const statItemValue = statItem.querySelector('.stats__item-count');
@@ -164,6 +186,7 @@ export class Stats extends HTMLElement {
   /**
    * Animates number value to the given value
    *
+   * @private
    * @param {HTMLElement} element
    * @param {number} start
    * @param {number} end
