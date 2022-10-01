@@ -54,9 +54,25 @@ export class Chart extends HTMLElement {
     button.addEventListener('click', () => {
       this.#toggleAnimation();
     });
+
+    const slider = this.shadowRoot.querySelector('#slider');
+
+    // Performance optimization: fire day select when user stops sliding
+    slider.addEventListener('change', () => {
+      const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
+      const date = bar.getAttribute('data-date');
+      this.#selectDay({
+        day: date,
+        isAnimationChange: false,
+      });
+    });
+
+    slider.addEventListener('input', () => {
+      this.#updateSliderBubble();
+    })
   }
 
-  // noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
   connectedCallback() {
     if (this.isConnected) {
       this.#render();
@@ -106,6 +122,9 @@ export class Chart extends HTMLElement {
       barData.appendChild(bar);
       barRow.appendChild(barData);
     }
+
+    const slider = this.shadowRoot.querySelector('#slider');
+    slider.max = sortedDates.length - 1;
 
     setTimeout(() => {
       this.#selectLastDay();
@@ -182,9 +201,10 @@ export class Chart extends HTMLElement {
    * @param {boolean} params.isAnimationChange
    */
   #selectDay({day, isAnimationChange}) {
+    const dayDate = new Date(day);
     this.dispatchEvent(new CustomEvent('day-selected', {
       detail: {
-        day: new Date(day),
+        day: dayDate,
         isAnimationChange
       }
     }));
@@ -195,7 +215,41 @@ export class Chart extends HTMLElement {
 
     this.#selectedBar = this.shadowRoot.querySelector(`.chart__bar[data-date="${day}"]`);
 
+    const slider = this.shadowRoot.querySelector('#slider');
+    slider.value = this.#getBarPosition(this.#selectedBar);
+    this.#updateSliderBubble();
+
     this.#selectedBar.classList.add('chart__bar--selected');
+  }
+
+  /**
+   * Returns bar position
+   *
+   * @param {Element} barElement bar element
+   *
+   * @returns {number} bar position (with 100 columns it is in range 0-99)
+   */
+  #getBarPosition(barElement) {
+    const barRow = this.shadowRoot.querySelector('.chart tr');
+    const barRowChildren = Array.from(barRow.children);
+    return barRowChildren.indexOf(barElement.parentElement);
+  }
+
+  /**
+   * Updates slider bubble
+   */
+  #updateSliderBubble() {
+    const slider = this.shadowRoot.querySelector('#slider');
+
+    const bar = this.shadowRoot.querySelector(`td:nth-child(${+slider.value + 1}) .chart__bar`);
+    const date = new Date(bar.getAttribute('data-date'));
+
+    const sliderOutput = this.shadowRoot.querySelector('#slider-output');
+    sliderOutput.textContent = date.toLocaleDateString();
+    const newVal = slider.value / slider.max * 100;
+
+    // Magic numbers to always keep the bubble centered
+    sliderOutput.style.left = `calc(${newVal}% + (${8 - newVal * 0.15}px))`;
   }
 }
 

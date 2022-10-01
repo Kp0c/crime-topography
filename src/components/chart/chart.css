@@ -38,6 +38,31 @@ td:not(td:has(.chart__bar.chart__bar--selected) ~ td:has(.chart__bar)) .chart__b
   opacity: 0.5;
 }
 
+.slider-container {
+  position: relative;
+}
+
+.slider {
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  margin-top: -8px;
+}
+
+.slider-output {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
+  /*noinspection CssUnknownTarget*/
+  background-image: url('/assets/images/slider-thumb.svg');
+}
+
 @media screen and (max-width: 768px) {
   .chart td {
     padding: 0;
