@@ -174,7 +174,8 @@ export class Stats extends HTMLElement {
     const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      element.innerHTML = Math.floor(progress * (end - start) + start).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
+      const newVal = Math.round(progress * (end - start) + start);
+      element.innerHTML = newVal.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
       if (progress < 1) {
         window.requestAnimationFrame(step);
       }

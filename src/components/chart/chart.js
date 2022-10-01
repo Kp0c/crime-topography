@@ -1,6 +1,6 @@
 import template from './chart.html?raw';
 import styles from './chart.css?raw';
-import {ANIMATION_DURATION} from "../../constants.js";
+import {ANIMATION_DURATION } from "../../constants.js";
 
 const templateElem = document.createElement('template');
 templateElem.innerHTML = template;
