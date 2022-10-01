@@ -16,6 +16,14 @@ export class Map extends HTMLElement {
   #events = [];
 
   /**
+   * animation id
+   *
+   * @private
+   * @type {number|null}
+   */
+  #animationId = null;
+
+  /**
    * set events for map
    *
    * @param {CrimeEvent[]} events events
@@ -133,17 +141,20 @@ export class Map extends HTMLElement {
 
       dotsToDraw.forEach((dot) => {
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 2, 0, 2 * Math.PI);
+        ctx.arc(dot.x, dot.y, 1, 0, 2 * Math.PI);
         ctx.fillStyle = '#C00000';
         ctx.fill();
         ctx.closePath();
       });
 
       if (progress < 1 && lastDotIdx < dots.length) {
-        window.requestAnimationFrame(step);
+        this.#animationId = window.requestAnimationFrame(step);
       }
     };
-    window.requestAnimationFrame(step);
+
+    window.cancelAnimationFrame(this.#animationId);
+
+    this.#animationId = window.requestAnimationFrame(step);
   }
 }
 

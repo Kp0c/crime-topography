@@ -180,6 +180,7 @@ export class Stats extends HTMLElement {
         window.requestAnimationFrame(step);
       }
     };
+
     window.requestAnimationFrame(step);
   }
 }
