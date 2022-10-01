@@ -30,10 +30,12 @@ h1 {
 .main-container {
   height: 100%;
   width: 100%;
+  max-width: 1800px;
   box-sizing: border-box;
   padding: 56px 120px 72px;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
 }
 
 .content {
