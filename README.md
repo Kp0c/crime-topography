@@ -14,7 +14,7 @@ I'm using component based approach with custom elements. All components are in `
 
 `main.js` wires all the components together.
 
-`event.service.js` is responsible for receiving data from the server and mutating it into more convenient format.
+`event.service.js` is responsible for receiving data from the server and mutating it into more convenient formats.
 
 `constants.js` contains generic constants for the app. 
 
