@@ -1,5 +1,7 @@
 # Ukraine Crime topography
-Created for Dev Challenge XIX
+Created for Dev Challenge XIXc
+
+Deployed app: https://crime-topography.vercel.app/
 
 ## Description
 This project is a map of war crimes that the <sub><sup>r</sup></sub>ussia (terrorist state) has committed in Ukraine.
