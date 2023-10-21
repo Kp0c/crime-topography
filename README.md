@@ -1,5 +1,5 @@
 # Ukraine Crime topography
-Created for Dev Challenge XIXc
+Created for Dev Challenge XIX
 
 Deployed app: https://crime-topography.vercel.app/
 
